@@ -1,8 +1,6 @@
 package com.acharya.dikshanta.controller;
 
-import com.acharya.dikshanta.dao.UserDaoImpl;
-import com.acharya.dikshanta.utils.Validator;
-import org.mindrot.jbcrypt.BCrypt;
+import com.acharya.dikshanta.service.UserService;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -14,15 +12,16 @@ import java.io.IOException;
 
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
-    private final UserDaoImpl userDao;
+    private final UserService userService;
 
-    public RegisterServlet(UserDaoImpl userDao) {
-        this.userDao = userDao;
+
+    public RegisterServlet() {
+        this.userService = new UserService();
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RequestDispatcher rd = req.getRequestDispatcher("views/register.jsp");
+        RequestDispatcher rd = req.getRequestDispatcher("/views/register.jsp");
         rd.forward(req, resp);
     }
 
@@ -31,12 +30,16 @@ public class RegisterServlet extends HttpServlet {
         String name = req.getParameter("name");
         String email = req.getParameter("email");
         String password = req.getParameter("password");
-        String errorMessage = Validator.validateRegisterRequest(name, email, password);
+        String errorMessage = userService.registerUser(name, email, password);
         if (errorMessage != null) {
-            RequestDispatcher rd = req.getRequestDispatcher("views/register.jsp");
-            rd.forward(req, resp);
+            req.setAttribute("error", errorMessage);
+            req.getRequestDispatcher("/views/register.jsp").forward(req, resp);
+            return;
+
         }
-        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        resp.sendRedirect(req.getContextPath() + "/login");
+        System.out.println("The name is " + name);
+        System.out.println("The email is " + email);
 
     }
 }

@@ -2,7 +2,6 @@ package com.acharya.dikshanta.dao;
 
 import com.acharya.dikshanta.annotations.Autowired;
 import com.acharya.dikshanta.utils.DbConnection;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,14 +15,14 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public boolean saveUser(String name, String email, String password) {
-        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+
         try (
                 Connection con = DbConnection.getConnection();
                 PreparedStatement ps = con.prepareStatement(INSERT_USER);
         ) {
             ps.setString(1, name);
             ps.setString(2, email);
-            ps.setString(3, hashedPassword);
+            ps.setString(3, password);
             int rowsEffected = ps.executeUpdate();
             return rowsEffected > 0;
 

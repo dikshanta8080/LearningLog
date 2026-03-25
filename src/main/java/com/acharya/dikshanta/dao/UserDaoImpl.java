@@ -1,12 +1,14 @@
 package com.acharya.dikshanta.dao;
 
 import com.acharya.dikshanta.annotations.Autowired;
+import com.acharya.dikshanta.model.User;
 import com.acharya.dikshanta.utils.DbConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
 @Autowired
 public class UserDaoImpl implements UserDao {
@@ -48,17 +50,20 @@ public class UserDaoImpl implements UserDao {
         return false;
     }
 
-    public boolean isLoggedIn(String email, String password) {
+    public Optional<User> getLoggedUser(String email, String password) {
         String sql = "SELECT * FROM users WHERE email=?";
         try (Connection con = DbConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery();
-             return rs.next();
-
         ) {
-
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                String savedEmail = rs.getString("email");
+                String savedPassword = rs.getString("password");
+                return Optional.of(new User(savedEmail, savedPassword));
+            }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+        return Optional.empty();
     }
 }

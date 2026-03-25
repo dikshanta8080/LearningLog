@@ -2,8 +2,11 @@ package com.acharya.dikshanta.service;
 
 import com.acharya.dikshanta.annotations.Autowired;
 import com.acharya.dikshanta.dao.UserDaoImpl;
+import com.acharya.dikshanta.model.User;
 import com.acharya.dikshanta.utils.Validator;
 import org.mindrot.jbcrypt.BCrypt;
+
+import java.util.Optional;
 
 public class UserService {
     private final UserDaoImpl userDao;
@@ -22,5 +25,15 @@ public class UserService {
         if (!isSaved) return "Registration Failed";
         return null;
 
+    }
+
+    public String authenticate(String email, String password) {
+        Optional<User> loggedUser = userDao.getLoggedUser(email, password);
+        if (loggedUser.isPresent()) {
+            User user = loggedUser.get();
+            boolean isAuthenticated = BCrypt.checkpw(password, user.getPassword());
+            if (isAuthenticated) return null;
+        }
+        return "Login Failed";
     }
 }

@@ -47,4 +47,18 @@ public class UserDaoImpl implements UserDao {
         }
         return false;
     }
+
+    public boolean isLoggedIn(String email, String password) {
+        String sql = "SELECT * FROM users WHERE email=?";
+        try (Connection con = DbConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery();
+             return rs.next();
+
+        ) {
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

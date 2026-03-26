@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <html>
 <head>
     <title>Register Page</title>
@@ -25,6 +25,7 @@
             width: 100%;
             padding: 8px;
             margin: 8px 0;
+            box-sizing: border-box;
         }
 
         button {
@@ -43,6 +44,12 @@
         .error {
             color: red;
             font-size: 14px;
+            text-align: center;
+        }
+
+        .link {
+            text-align: center;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -51,15 +58,22 @@
 <div class="container">
     <h2>Register</h2>
 
-    <form action="register" method="post">
+    <%String error = (String) request.getAttribute("error");%>
+    <%if (error != null) {%>
+    <p class="error"><%=error%>
+    </p>
+    <%}%>
+
+    <form action="${pageContext.request.contextPath}/register" method="post">
         <input type="text" name="name" placeholder="Enter Name" required/>
-
         <input type="email" name="email" placeholder="Enter Email" required/>
-
         <input type="password" name="password" placeholder="Enter Password" required/>
-
         <button type="submit">Register</button>
     </form>
+
+    <div class="link">
+        <p>Already have an account? <a href="${pageContext.request.contextPath}/login">Login</a></p>
+    </div>
 </div>
 
 </body>

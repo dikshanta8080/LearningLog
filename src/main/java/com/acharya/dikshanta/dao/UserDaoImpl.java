@@ -55,10 +55,13 @@ public class UserDaoImpl implements UserDao {
         try (Connection con = DbConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
         ) {
+            ps.setString(1,email);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 String savedEmail = rs.getString("email");
                 String savedPassword = rs.getString("password");
+                System.out.println("Saved Email:"+savedEmail);
+                System.out.println("Saved Password:"+savedPassword);
                 return Optional.of(new User(savedEmail, savedPassword));
             }
         } catch (SQLException e) {

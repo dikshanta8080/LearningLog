@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <html>
 <head>
     <title>Login Page</title>
@@ -25,6 +25,7 @@
             width: 100%;
             padding: 8px;
             margin: 8px 0;
+            box-sizing: border-box;
         }
 
         button {
@@ -43,6 +44,7 @@
         .error {
             color: red;
             font-size: 14px;
+            text-align: center;
         }
 
         .link {
@@ -56,17 +58,19 @@
 <div class="container">
     <h2>Login</h2>
 
-
-    <form action="login" method="post">
+    <% String error = (String) request.getAttribute("error"); %>
+    <%if (error != null) {%>
+    <p class="error"><%=error%>
+    </p>
+    <%}%>
+    <form action="${pageContext.request.contextPath}/login" method="post">
         <input type="email" name="email" placeholder="Enter Email" required/>
-
         <input type="password" name="password" placeholder="Enter Password" required/>
-
         <button type="submit">Login</button>
     </form>
 
     <div class="link">
-        <p>Don't have an account? <a href="register.jsp">Register</a></p>
+        <p>Don't have an account? <a href="${pageContext.request.contextPath}/register">Register</a></p>
     </div>
 </div>
 
